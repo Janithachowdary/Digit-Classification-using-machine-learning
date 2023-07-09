@@ -1,0 +1,50 @@
+import numpy as np
+import pandas as pd
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, 
+f1_score,recall_score
+from sklearn.model_selection import train_test_split
+# Load the MNIST dataset
+train_data = pd.read_csv('/content/sample_data/mnist_train_small.csv')
+test_data = pd.read_csv('/content/sample_data/mnist_test.csv')
+# Explore data
+train_data.info()
+train_data.head(5)
+print(train_data.shape)
+# Chcek for Nan Values
+train_data.isnull().sum()
+test_data.isnull().sum()
+train_data.dropna()
+test_data.dropna()
+# Get the feature names from the training data
+feature_names = train_data.columns[1:]
+# Split the dataset into training and testing sets
+X_train = train_data.iloc[:, 1:]
+y_train = train_data.iloc[:, 0]
+X_test = test_data.iloc[:, 1:]
+y_test = test_data.iloc[:, 0]
+# Assign the feature names to X_train and X_test
+X_train.columns = feature_names
+X_test.columns = feature_names
+# Create a Gaussian Naive Bayes classifier
+gnb = GaussianNB()
+# Train the classifier on the training data
+gnb.fit(X_train, y_train)
+# Make predictions on the testing data
+y_pred = gnb.predict(X_test)
+# Calculate the accuracy of the classifier
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+# Calculate the metrix of the classifier
+cm = confusion_matrix(y_test, y_pred)
+print("confusion_metrix \n:", cm)
+# Calculate the precision, recall, and F1 score of the classifier
+precision = precision_score(y_test, y_pred, average='macro')
+recall = recall_score(y_test, y_pred, average='macro')
+f1 = f1_score(y_test, y_pred, average='macro')
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+print("Macro-average Precision:", precision)
+print("Macro-average Recall:", recall)
+print("Macro-average F1 Score:", f1)
